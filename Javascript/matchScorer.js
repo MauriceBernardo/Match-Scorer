@@ -67,9 +67,9 @@ export function comp101_tiebreaker(points, server){
     }
     // returning the value depending on the viewer
     if (server === 1){
-        return [String(player1s)+"-"+String(player0s), winner, remainder];
+        return [`${player1s}-${player0s}`, winner, remainder];
     } else if (server === 0){
-        return [String(player0s)+"-"+String(player1s), winner, remainder];
+        return [`${player0s}-${player1s}`, winner, remainder];
     }
 }
 
@@ -159,60 +159,67 @@ export function comp101_game(points, server){
     
     //  Condition to return based on the server
     if (server == 1){
-        return [String(player1s) + "-" + String(player0s), winner, remainder];
+        return [`${player1s}-${player0s}`, winner, remainder];
     } else if (server == 0){
-        return [String(player0s) + "-" + String(player1s), winner, remainder];
+        return [`${player0s}-${player1s}`, winner, remainder];
     }
 }
 
-// def comp101_set(points, server, tiebreaker=comp101_tiebreaker,
-//                 game=comp101_game):
-//     """
-//     The function takes list of number of 1 and 0 for points, and takes integer 
-//     of 0 and 1 for server. It return the tuple of the setscore in tennis game,
-//     the winner, and the remainder points of the set.
-//     """
-//     winner = 0
-//     win1 = win0 = 0
+export function comp101_set(points, server, tiebreaker=comp101_tiebreaker,
+                game=comp101_game){
+    /*
+    The function takes list of number of 1 and 0 for points, and takes integer 
+    of 0 and 1 for server. It return the tuple of the setscore in tennis game,
+    the winner, and the remainder points of the set.
+    */
+    const winner = 0;
+    const win1 = 0;
+    const win0 = 0;
     //  Calculate the set score before one of the player reach 6
-//     while (winner == 0 or winner == 1) and win1 != 6 and win0 != 6:
-//         res_game = game(points, server)
-//         winner = res_game[1]
-//         if winner == 1:
-//             win1 += 1
-//             points = res_game[2]
-//             remainder = points
-//         else if (winner == 0:
-//             win0 += 1
-//             points = res_game[2]
-//             remainder = points
-//         else:
-//             remainder = []
+    while ((winner == 0 || winner == 1) && win1 != 6 && win0 != 6){
+        res_game = game(points, server);
+        winner = res_game[1];
+        if (winner == 1){
+            win1 += 1;
+            points = res_game[2];
+            remainder = points;
+        } else if (winner == 0){
+            win0 += 1;
+            points = res_game[2];
+            remainder = points;
+        } else {
+            remainder = [];
+        }
+    }
     //  Calculate the set points and decide if tiebreaker happen
-//     if win1 == 5 or win0 == 5:
-//         res_game = game(points, server)
-//         points = res_game[2]
+    if (win1 == 5 || win0 == 5){
+        res_game = game(points, server);
+        points = res_game[2];
         //  Scoring if tiebreak didn't happen
-//         if res_game[1] == 0 and win1 == 5:
-//             win0 += 1
-//         else if (res_game[1] == 1 and win0 == 5:
-//             win1 += 1
+        if (res_game[1] == 0 && win1 == 5){
+            win0 += 1;
+        } else if (res_game[1] == 1 && win0 == 5) {
+            win1 += 1;
         //  Mechanism for tiebreak
-//         else if (res_game[1] == 0 and win1 == 6 or res_game[1] == 1 and win0 == 6:
-//             win0 = win1 = 6
-//             res_final = tiebreaker(points, server)
-//             remainder = res_final[2]
-//             winner = res_final[1]
-//             if winner == 1:
-//                 win1 += 1
-//             else if (winner == 0:
-//                 win0 += 1
+        } else if (res_game[1] == 0 && win1 == 6 || res_game[1] == 1 && win0 == 6){
+            win0 = win1 = 6;
+            res_final = tiebreaker(points, server);
+            remainder = res_final[2];
+            winner = res_final[1];
+            if (winner == 1){
+                win1 += 1;
+            } else if (winner == 0){
+                win0 += 1;
+            }
+        }
+    }
     //  Condition to return based on the server
-//     if server == 1:
-//         return (str(win1) + "-" + str(win0), winner, remainder)
-//     else if (server == 0:
-//         return (str(win0) + "-" + str(win1), winner, remainder)
-
+    if (server == 1){
+        return (`${player1s}-${player0s}`, winner, remainder);
+    } else if (server == 0){
+        return (`${player0s}-${player1s}`, winner, remainder);
+    }
+}
 
 // def comp101_match(points, server, maxlen, tiebreaker=comp101_tiebreaker,
 //                   game=comp101_game, set_score=comp101_set):
@@ -246,7 +253,7 @@ export function comp101_game(points, server){
 //             setscore0 = setscore[0][0]
 //             setscore1 = setscore[0][2]
             //  Counting and adding mechanism for no winner, ignoring (0-0) score
-//             if setscore0 != "0" or setscore1 != "0":
+//             if setscore0 != "0" || setscore1 != "0":
 //                 match = match + " " + setscore[0]
 //                 countset += 1
     //  Count game score if tiebreaker happen in the last set           
