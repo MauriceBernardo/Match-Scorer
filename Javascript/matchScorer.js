@@ -196,13 +196,17 @@ export function comp101_set(points, server, tiebreaker=comp101_tiebreaker,
     }
     //  Calculate the set points and decide if tiebreaker happen
     if (win1 == 5 || win0 == 5){
+        console.log("yeay");
+
         let res_game = game(updatedPoint, server);
         updatedPoint = res_game[2];
         //  Scoring if tiebreak didn't happen
         if (res_game[1] == 0 && win1 == 5){
             win0 += 1;
+            winner = null;
         } else if (res_game[1] == 1 && win0 == 5) {
             win1 += 1;
+            winner = null;
         //  Mechanism for tiebreak
         } else if (res_game[1] == 0 && win1 == 6 || res_game[1] == 1 && win0 == 6){
             win0 = win1 = 6;

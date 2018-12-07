@@ -68,7 +68,7 @@ describe("Set", () => {
     let points = [1,0,1,0,1,0,1,0,1,1];
     let player0 = 0;
     let player1 = 1;
-    let tiebreakerPoint = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0]
+    let tiebreakerPoint = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1]
     let mockGame = jest.fn()
         .mockImplementation(matchScorer.comp101_game);
     let mockTiebreaker = jest.fn()
@@ -82,7 +82,10 @@ describe("Set", () => {
     })
 
     it("should resolve tiebreaker", () => {        
-        expect(matchScorer.comp101_set(tiebreakerPoint,player0))
-            .toEqual(["6-5",0,[0,0,0]]);
+        expect(matchScorer.comp101_set(tiebreakerPoint,player0,mockTiebreaker,mockGame))
+            .toEqual(["6-6",null,[0,1,1,1,1]]);
+        expect(mockTiebreaker.mock.calls.length).toBeGreaterThan(0);
     })
 })
+
+
