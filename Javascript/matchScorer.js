@@ -196,17 +196,13 @@ export function comp101_set(points, server, tiebreaker=comp101_tiebreaker,
     }
     //  Calculate the set points and decide if tiebreaker happen
     if (win1 == 5 || win0 == 5){
-        console.log("yeay");
-
         let res_game = game(updatedPoint, server);
         updatedPoint = res_game[2];
         //  Scoring if tiebreak didn't happen
         if (res_game[1] == 0 && win1 == 5){
             win0 += 1;
-            winner = null;
         } else if (res_game[1] == 1 && win0 == 5) {
             win1 += 1;
-            winner = null;
         //  Mechanism for tiebreak
         } else if (res_game[1] == 0 && win1 == 6 || res_game[1] == 1 && win0 == 6){
             win0 = win1 = 6;
@@ -227,68 +223,87 @@ export function comp101_set(points, server, tiebreaker=comp101_tiebreaker,
     }
 }
 
-// def comp101_match(points, server, maxlen, tiebreaker=comp101_tiebreaker,
-//                   game=comp101_game, set_score=comp101_set):
-//     """
-//     The function takes list of number of 1 and 0 for points, and takes integer 
-//     of 0 and 1 for server, and integer for maxlen. It return the tuple of the 
-//     match scores in tennis game which consist of setscore and followed by game
-//     score.
-//     """
-//     winner = 0
-//     match = ""
-//     countset = 0
+export function comp101_match(points, server, maxlen, tiebreaker=comp101_tiebreaker,
+                  game=comp101_game, set_score=comp101_set){
+    /*
+    The function takes list of number of 1 and 0 for points, and takes integer 
+    of 0 and 1 for server, and integer for maxlen. It return the tuple of the 
+    match scores in tennis game which consist of setscore and followed by game
+    score.
+    */
+    let winner = 0;
+    let match = "";
+    let setscore = null;
+    let countset = 0;
+    let updatedPoint = points;
+    let remainder = [];
+    let setscore0 = null;
+    let setscore1 = null;
+    let gamescore = null;
+    let gamescore0 = null;
+    let gamescore1 = null;
     //  Conditional for empty point
-//     if points == []:
-//         return match[1:]
+    if (updatedPoint === []){
+        return match.substring(1);
+    }
     //  Counting the set and adding set score to match score 
-//     while winner is not None:
+    while (winner !== null){
         //  Conditional for counting and adding if there is a winner in the set
-//         if set_score(points, server)[1] is not None:
-//             setscore = set_score(points, server)
-//             winner = setscore[1]
-//             points = setscore[2]
-//             match = match + " " + setscore[0]
-//             countset += 1
+        if (set_score(updatedPoint, server)[1] !== null){
+            setscore = set_score(updatedPoint, server);
+            winner = setscore[1];
+            updatedPoint = setscore[2];
+            match = match + " " + setscore[0];
+            countset += 1;
         //  Conditional for counting and adding if there is no winner in the set
-//         else if (set_score(points, server)[1] is None:
-//             remainder = points
-//             setscore = set_score(points, server)
-//             winner = setscore[1]
-//             points = setscore[2]
-//             setscore0 = setscore[0][0]
-//             setscore1 = setscore[0][2]
+        } else if (set_score(updatedPoint, server)[1] === null) {
+            remainder = updatedPoint;
+            setscore = set_score(updatedPoint, server);
+            winner = setscore[1];
+            updatedPoint = setscore[2];
+            setscore0 = setscore[0][0];
+            setscore1 = setscore[0][2];
             //  Counting and adding mechanism for no winner, ignoring (0-0) score
-//             if setscore0 != "0" || setscore1 != "0":
-//                 match = match + " " + setscore[0]
-//                 countset += 1
+            if (setscore0 !== "0" || setscore1 !== "0"){
+                match = match + " " + setscore[0];
+                countset += 1;
+            }
+        }
+    }
     //  Count game score if tiebreaker happen in the last set           
-//     if setscore0 == "6" and setscore1 == "6":
-        //  Making the points become the points when tiebreaker happen  
-//         n = 0
-//         while n != 12:
-//             gamescore = game(remainder, server)
-//             winner = gamescore[1]
-//             remainder = gamescore[2]
-//             n += 1
+    if (setscore0 == "6" && setscore1 == "6"){
+        //  Making the Points become the points when tiebreaker happen  
+        let n = 0;
+        while (n != 12){
+            gamescore = game(remainder, server);
+            winner = gamescore[1];
+            remainder = gamescore[2];
+            n += 1;
+        }
         //  Adding tiebreaker score to match score and ignore (0-0) score 
-//         tiescore = tiebreaker(remainder, server)
-//         if tiescore[0][0] != "0" or tiescore[0][2] != "0":
-//             match = match + " " + gamescore[0]
+        tiescore = tiebreaker(remainder, server);
+        if (tiescore[0][0] != "0" || tiescore[0][2] != "0"){
+            match = match + " " + gamescore[0];
+        }
     //  Count game score if non-tiebreaker happen in the last set        
-//     else:
-//         winner = 0
+    } else {
+        winner = 0;
         //  Adding non-tiebreaker score to match score and ignore (0-0) score
-//         while winner is not None:
-//             gamescore = game(remainder, server)
-//             winner = gamescore[1]
-//             remainder = gamescore[2]
-//             gamescore0 = gamescore[0][0]
-//             gamescore1 = gamescore[0][2]
-//         if gamescore0 != "0" or gamescore1 != "0":
-//             match = match + " " + gamescore[0]
+        while (winner !== null){
+            gamescore = game(remainder, server);
+            winner = gamescore[1];
+            remainder = gamescore[2];
+            gamescore0 = gamescore[0][0];
+            gamescore1 = gamescore[0][2];
+        }
+        if (gamescore0 != "0" || gamescore1 != "0"){
+            match = match + " " + gamescore[0];
+        }
+    }
     //  Return False if the sets happen more than maxlen
-//     if countset >= maxlen:
-//         return False
-//     else:
-//         return match[1:]
+    if (countset >= maxlen){
+        return false;
+    } else {
+        return match.substring(1);
+    }
+}

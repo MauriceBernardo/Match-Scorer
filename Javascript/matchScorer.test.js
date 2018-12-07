@@ -88,4 +88,12 @@ describe("Set", () => {
     })
 })
 
-
+describe("match", () => {
+    let points = [1,0,1,0,1,0,1,0,1,1];
+    let player0 = 0;
+    let player1 = 1;
+    
+    it("should give the right value", () => {
+        expect(matchScorer.comp101_match(points,player0,5)).toEqual("0-1");
+    })
+})
