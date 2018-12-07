@@ -50,4 +50,16 @@ describe("Game", () => {
         expect(matchScorer.comp101_game(points,player0))
             .toEqual(["40-W",1,[]]);
     });
+
+    it("should return right score based on the player", () => {
+        expect(matchScorer.comp101_game(points,player0))
+            .toEqual(["40-W",1,[]]);
+        expect(matchScorer.comp101_game(points,player1))
+            .toEqual(["W-40",1,[]]);
+    });
+
+    it("should return right remainder from excessive score after winning",() =>{
+        expect(matchScorer.comp101_game(excessivePoints,player0))
+            .toEqual(["W-40",0,[1]])
+    });
 })
