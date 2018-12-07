@@ -172,29 +172,32 @@ export function comp101_set(points, server, tiebreaker=comp101_tiebreaker,
     of 0 and 1 for server. It return the tuple of the setscore in tennis game,
     the winner, and the remainder points of the set.
     */
-    const winner = 0;
-    const win1 = 0;
-    const win0 = 0;
+    let winner = 0;
+    let win1 = 0;
+    let win0 = 0;
+    let remainder = [];
+    let updatedPoint = points;
     //  Calculate the set score before one of the player reach 6
     while ((winner == 0 || winner == 1) && win1 != 6 && win0 != 6){
-        res_game = game(points, server);
+        let res_game = game(updatedPoint, server);
         winner = res_game[1];
         if (winner == 1){
             win1 += 1;
-            points = res_game[2];
-            remainder = points;
+            updatedPoint = res_game[2];
+            remainder = updatedPoint;
         } else if (winner == 0){
             win0 += 1;
-            points = res_game[2];
-            remainder = points;
+            updatedPoint = res_game[2];
+            remainder = updatedPoint;
         } else {
             remainder = [];
+            break;
         }
     }
     //  Calculate the set points and decide if tiebreaker happen
     if (win1 == 5 || win0 == 5){
-        res_game = game(points, server);
-        points = res_game[2];
+        let res_game = game(updatedPoint, server);
+        updatedPoint = res_game[2];
         //  Scoring if tiebreak didn't happen
         if (res_game[1] == 0 && win1 == 5){
             win0 += 1;
@@ -203,8 +206,7 @@ export function comp101_set(points, server, tiebreaker=comp101_tiebreaker,
         //  Mechanism for tiebreak
         } else if (res_game[1] == 0 && win1 == 6 || res_game[1] == 1 && win0 == 6){
             win0 = win1 = 6;
-            res_final = tiebreaker(points, server);
-            remainder = res_final[2];
+            let res_final = tiebreaker(updatedPoint, server);
             winner = res_final[1];
             if (winner == 1){
                 win1 += 1;
@@ -215,9 +217,9 @@ export function comp101_set(points, server, tiebreaker=comp101_tiebreaker,
     }
     //  Condition to return based on the server
     if (server == 1){
-        return (`${win1}-${win0}`, winner, remainder);
+        return [`${win1}-${win0}`, winner, remainder];
     } else if (server == 0){
-        return (`${win0}-${win1}`, winner, remainder);
+        return [`${win0}-${win1}`, winner, remainder];
     }
 }
 

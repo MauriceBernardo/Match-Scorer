@@ -68,5 +68,21 @@ describe("Set", () => {
     let points = [1,0,1,0,1,0,1,0,1,1];
     let player0 = 0;
     let player1 = 1;
-    let excessivePoints = [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0,1];
+    let tiebreakerPoint = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0]
+    let mockGame = jest.fn()
+        .mockImplementation(matchScorer.comp101_game);
+    let mockTiebreaker = jest.fn()
+        .mockImplementation(matchScorer.comp101_tiebreaker);
+
+    it("should have the right behaviour and value", () => {
+        expect(matchScorer.comp101_set(points,player0,mockTiebreaker,mockGame))
+            .toEqual(["0-1",null,[]]);
+        expect(mockTiebreaker.mock.calls.length).toBe(0);
+        expect(mockGame.mock.calls.length).toBeGreaterThan(0);
+    })
+
+    it("should resolve tiebreaker", () => {        
+        expect(matchScorer.comp101_set(tiebreakerPoint,player0))
+            .toEqual(["6-5",0,[0,0,0]]);
+    })
 })
