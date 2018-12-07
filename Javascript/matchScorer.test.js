@@ -63,3 +63,10 @@ describe("Game", () => {
             .toEqual(["W-40",0,[1]])
     });
 })
+
+describe("Set", () => {
+    let points = [1,0,1,0,1,0,1,0,1,1];
+    let player0 = 0;
+    let player1 = 1;
+    let excessivePoints = [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0,1];
+})

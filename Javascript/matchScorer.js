@@ -215,9 +215,9 @@ export function comp101_set(points, server, tiebreaker=comp101_tiebreaker,
     }
     //  Condition to return based on the server
     if (server == 1){
-        return (`${player1s}-${player0s}`, winner, remainder);
+        return (`${win1}-${win0}`, winner, remainder);
     } else if (server == 0){
-        return (`${player0s}-${player1s}`, winner, remainder);
+        return (`${win0}-${win1}`, winner, remainder);
     }
 }
 
